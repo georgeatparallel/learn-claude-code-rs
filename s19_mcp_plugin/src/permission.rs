@@ -385,6 +385,34 @@ mod tests {
     }
 
     #[test]
+    fn parallel_tools_require_approval_again_after_allow_once() {
+        let mut manager = PermissionManager::try_new(PermissionMode::Default).unwrap();
+        for (name, input) in [
+            (
+                "web_search",
+                json!({"search_queries": ["official Rust learn"]}),
+            ),
+            (
+                "web_fetch",
+                json!({"urls": ["https://www.rust-lang.org/learn"]}),
+            ),
+        ] {
+            let name = format!("mcp__parallel-search__search__{name}");
+            assert_eq!(
+                manager.check(&name, &input).behavior,
+                PermissionBehavior::Ask
+            );
+            assert!(manager.apply_user_choice(UserPermissionChoice::AllowOnce, &name));
+            assert_eq!(
+                manager.check(&name, &input).behavior,
+                PermissionBehavior::Ask
+            );
+            assert!(!manager.rules().contains(&name));
+        }
+        assert_eq!(manager.mode(), PermissionMode::Default);
+    }
+
+    #[test]
     fn always_allow_adds_exact_tool_allowlist_entry() {
         let mut manager = PermissionManager::try_new(PermissionMode::Default).unwrap();
 
