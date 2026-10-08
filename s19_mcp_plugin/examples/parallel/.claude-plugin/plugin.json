@@ -1,0 +1,19 @@
+{
+  "name": "parallel-search",
+  "version": "1.0.0",
+  "mcpServers": {
+    "search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote@0.14.3",
+        "https://search.parallel.ai/mcp",
+        "--transport",
+        "http-only",
+        "--header",
+        "User-Agent:learn-claude-code-rs/0.1.0"
+      ],
+      "env": {}
+    }
+  }
+}
